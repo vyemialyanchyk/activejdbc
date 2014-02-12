@@ -56,6 +56,7 @@ public class ModelInstrumentation{
         URI u = modelClass.getURL().toURI();
         File f = new File(u);
         String fp = f.getPath();
+        fp = fp.replace("\\", "/");
         String className = modelClass.getName();
         className = className.replace(".", "/");
         return fp.substring(0, fp.indexOf(className));
