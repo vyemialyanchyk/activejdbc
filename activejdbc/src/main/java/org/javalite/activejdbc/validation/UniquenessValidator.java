@@ -14,13 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License. 
 */
 
-package activejdbc.examples.multidb;
+package org.javalite.activejdbc.validation;
 
+import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
-import org.javalite.activejdbc.annotations.DbName;
+import org.javalite.activejdbc.Registry;
 
-/**
- * @author Igor Polevoy
- */
-@DbName("university")
-public class Student  extends Model {}
+
+public class UniquenessValidator extends ValidatorAdapter {
+    private String attribute;
+    public UniquenessValidator(String attribute) {
+        this.attribute = attribute;
+        setMessage("should be unique");
+    }
+    @Override
+    public void validate(Model m) {
+        if(Base.count(Registry.instance().getMetaModel(m.getClass()).getTableName(), attribute + " = ? AND id != ?", m.get(attribute), m.getId()) > 0) {
+            m.addValidator(this, attribute);
+        }
+    }
+}
